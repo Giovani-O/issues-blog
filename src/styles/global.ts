@@ -19,7 +19,7 @@ export const GlobalStyle = createGlobalStyle`
     box-shadow: 0 0 0 0 transparent;
   }
 
-  body, input, textarea, button {
+  body, input, textarea, button, a {
     font-family: 'Nunito', sans-serif;
     line-height: 160%;
   }
