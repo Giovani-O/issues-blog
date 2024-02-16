@@ -1,12 +1,10 @@
 import styled from 'styled-components'
 
 export const ProfileWrapper = styled.section`
-  position: absolute;
-  width: 100%;
+  min-width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  top: 208px;
 `
 
 export const ProfileContainer = styled.div`
