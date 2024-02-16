@@ -6,11 +6,5 @@ export const HomeMain = styled.main`
   flex-direction: column;
   position: absolute;
   top: 208px;
-  left: 50%;
-  transform: translate(-50%);
-
-  @media (max-width: 768px) {
-    left: auto;
-    transform: none;
-  }
+  width: 100%;
 `
