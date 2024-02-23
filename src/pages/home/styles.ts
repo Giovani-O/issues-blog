@@ -100,7 +100,7 @@ export const IssueCard = styled.div`
     color: ${(props) => props.theme['base-title']};
 
     word-wrap: break-word;
-    width: 280px;
+    width: 260px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

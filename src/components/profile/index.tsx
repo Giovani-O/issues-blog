@@ -7,39 +7,55 @@ import {
   ProfileWrapper,
 } from './styles'
 import { defaultTheme } from '../../styles/themes/default'
+import { Api } from '../../axios'
+import { useEffect, useState } from 'react'
+import { GithubUser } from '../../@types/github-user'
 
 export function Profile() {
+  const [user, setUser] = useState({} as GithubUser)
+
+  function getUserProfile(username: string) {
+    Api.get(`/users/${username}`)
+      .then((response) => {
+        setUser(response.data)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
+
+  useEffect(() => {
+    getUserProfile('Giovani-O')
+  }, [])
+
   return (
     <ProfileWrapper>
       <ProfileContainer>
-        <img src="https://source.unsplash.com/random" alt="" />
+        <img src={user.avatar_url} alt="" />
 
         <article>
           <ProfileTitle>
-            <h1>Giovani de Oliveira</h1>
+            <h1>{user.name}</h1>
 
-            <a href="#">
+            <a href={user.html_url} target="_blank">
               GITHUB <ArrowUpRightFromSquare size={18} />
             </a>
           </ProfileTitle>
 
-          <ProfileBio>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis modi
-            est eos veniam! Placeat fugit, alias id ad, optio repellendus
-            accusamus!
-          </ProfileBio>
+          <ProfileBio>{user.bio}</ProfileBio>
 
           <ProfileInfo>
             <span>
-              <Github size={18} color={defaultTheme['base-label']} /> Giovani-O
+              <Github size={18} color={defaultTheme['base-label']} />{' '}
+              {user.login}
             </span>
             <span>
               <Building size={18} color={defaultTheme['base-label']} />
-              N/A
+              {user.company ? user.company : 'N/A'}
             </span>
             <span>
               <Users size={18} color={defaultTheme['base-label']} />
-              20 seguidores
+              {user.followers} seguidores
             </span>
           </ProfileInfo>
         </article>
