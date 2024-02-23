@@ -5,30 +5,42 @@ import { Api } from '../../axios'
 import { GithubIssue, Item } from '../../@types/github.issue'
 import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import useDebounce from '../../hooks/use-debouncer'
 
 export function Home() {
   const [issues, setIssues] = useState({
     items: [] as Item[],
   } as GithubIssue)
+  const [searchQuery, setSearchQuery] = useState('')
 
-  async function getIssues(query: string = '', username: string, repo: string) {
-    await Api.get(`/search/issues?q=${query}%20repo:${username}/${repo}`)
-      .then((response) => {
-        setIssues(response.data)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-  }
+  const debouncedSearchQuery = useDebounce(searchQuery, 1000)
 
   useEffect(() => {
-    getIssues('', 'Giovani-O', 'issues-blog')
-  }, [])
+    async function getIssues(
+      query: string = '',
+      username: string,
+      repo: string,
+    ) {
+      await Api.get(`/search/issues?q=${query}%20repo:${username}/${repo}`)
+        .then((response) => {
+          setIssues(response.data)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    }
+
+    getIssues(debouncedSearchQuery, 'Giovani-O', 'issues-blog')
+    console.log('here')
+  }, [debouncedSearchQuery])
 
   function handleSearch(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault()
+    setSearchQuery(event.target.value)
+  }
 
-    console.log(event.target.value)
+  function handleOpenIssue(issueId: number) {
+    console.log(issueId)
   }
 
   return (
@@ -50,7 +62,7 @@ export function Home() {
 
       <IssuesGrid>
         {issues?.items.map((issue) => (
-          <IssueCard key={issue.id}>
+          <IssueCard key={issue.id} onClick={() => handleOpenIssue(issue.id)}>
             <div>
               <h1>{issue.title}</h1>
               <h5>
