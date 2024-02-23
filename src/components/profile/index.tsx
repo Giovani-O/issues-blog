@@ -42,7 +42,7 @@ export function Profile() {
             </a>
           </ProfileTitle>
 
-          <ProfileBio>{user.bio}</ProfileBio>
+          <ProfileBio>{user.bio ? user.bio : 'N/A'}</ProfileBio>
 
           <ProfileInfo>
             <span>

@@ -28,6 +28,7 @@ export const ProfileContainer = styled.div`
   article {
     display: flex;
     flex-direction: column;
+    width: 100%;
   }
 
   @media (max-width: 768px) {

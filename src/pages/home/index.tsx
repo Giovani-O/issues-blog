@@ -1,8 +1,30 @@
-import { ChangeEvent } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { Profile } from '../../components/profile'
 import { HomeMain, IssueCard, IssuesGrid, SearchForm } from './styles'
+import { Api } from '../../axios'
+import { GithubIssue, Item } from '../../@types/github.issue'
+import { formatDistanceToNow } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 
 export function Home() {
+  const [issues, setIssues] = useState({
+    items: [] as Item[],
+  } as GithubIssue)
+
+  async function getIssues(query: string = '', username: string, repo: string) {
+    await Api.get(`/search/issues?q=${query}%20repo:${username}/${repo}`)
+      .then((response) => {
+        setIssues(response.data)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
+
+  useEffect(() => {
+    getIssues('', 'Giovani-O', 'issues-blog')
+  }, [])
+
   function handleSearch(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault()
 
@@ -16,7 +38,7 @@ export function Home() {
       <SearchForm>
         <div>
           <h5>Publicações</h5>
-          <span>6 publicações</span>
+          <span>{issues.total_count} publicações</span>
         </div>
 
         <input
@@ -27,19 +49,18 @@ export function Home() {
       </SearchForm>
 
       <IssuesGrid>
-        {Array.from([1, 2, 3, 4, 5, 6]).map((_value, index) => (
-          <IssueCard key={index}>
+        {issues?.items.map((issue) => (
+          <IssueCard key={issue.id}>
             <div>
-              <h1>Titleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee</h1>
-              <h5>3 days ago</h5>
+              <h1>{issue.title}</h1>
+              <h5>
+                {formatDistanceToNow(issue.updated_at, {
+                  locale: ptBR,
+                  addSuffix: true,
+                })}
+              </h5>
             </div>
-            <span>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem
-              ipsum dolor sit amet consectetur adipisicing elit. Lorem ipsum
-              dolor sit amet consectetur adipisicing elit. Lorem ipsum dolor sit
-              amet consectetur adipisicing elit. Lorem ipsum dolor sit amet
-              consectetur adipisicing elit.
-            </span>
+            <span>{issue.body}</span>
           </IssueCard>
         ))}
       </IssuesGrid>
